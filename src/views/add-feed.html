@@ -1,13 +1,59 @@
 <link rel="import" href="../../lib/polymer/polymer.html">
+<link rel="import" href="../../lib/paper-button/paper-button.html">
+<link rel="import" href="../../lib/paper-input/paper-input.html">
+<link rel="import" href="../components/external-link.html">
 
 <dom-module id="add-feed">
   <template>
-    <h1>Add a Feed</h1>
+    <div class="add-feed-form">
+      <h1>Add a Feed</h1>
+      <paper-input 
+        label="Feed URL" 
+        value="{{addURL}}" 
+        invalid="{{isNotValid}}"
+        error-message="{{errorMessage}}"></paper-input>
+      <paper-button on-click="_addFeed">Add</paper-button>
+    </div>
+    <div class="feed-list">
+      <template is="dom-repeat" items="[[feeds]]">
+        <external-link href="[[item.link]]">[[item.title]]</external-link>
+        <p>[[item.description]]</p>
+      </template>
+    </div>
   </template>
 
+  <script src="../rss.js"></script>
   <script>
     Polymer({
-      is: 'add-feed'
+      is: 'add-feed',
+      properties: {
+        feeds: {
+          type: Array,
+          notify: true
+        }
+      },
+
+      errorMessage: 'Please enter a valid RSS feed URL',
+      isNotValid: false,
+
+      _addFeed() {
+        fetchFeed(this.addURL, (err, info, articles) => {
+          if (err) {
+            this.isNotValid = true;
+            this.errorMessage = err.toString();
+          } else {
+            this.isNotValid = false;
+            this.addURL = '';
+            this.push('feeds', info);
+          }
+        });
+      },
+
+      ready() {
+        setInterval(() => {
+          console.log(this.feeds);
+        }, 5000);
+      }
     });
   </script>
 </dom-module>

@@ -1,47 +1,44 @@
+// Since this is Electron, we can use node modules alongside our Polymer code.
+// Pretty slick.
 var https = require('https'),
     rss = require('rss-parser'),
     async = require('async');
 
-const defaultFeeds = [
-  'https://news.ycombinator.com/rss'
-];
+function _parseFeed(url, res, cb) {
+  var data = '';
 
-class RSSClient {
-  constructor() {
-    this.feeds = defaultFeeds;
-    this.articles = [];
-  }
+  res.on('data', (chunk) => {
+    data += chunk;
+  });
 
-  addArticles(articles) {
-    this.articles = this.articles.concat(articles);
-  }
+  res.on('end', () => {
+    rss.parseString(data, (err, result) => {
+      if (err) {
+        cb(err);
+      } else {
+        var feed = result.feed;
+        var info = {
+          title: feed.title,
+          link: feed.link,
+          description: feed.description,
+          url: url
+        };
+        cb(null, info, result.feed.entries);
+      }
+    });
+  });
+}
 
-  fetchFeed(url, cb) {
+/**
+ * Fetches and parses a feed given a URL, returning entries and feed 
+ * information.
+ */
+function fetchFeed(url, cb) {
+  try {
     https.get(url, (res) => {
-      var data = '';
-
-      res.on('data', (chunk) => {
-        data += chunk;
-      });
-
-      res.on('end', () => {
-        rss.parseString(data, (err, result) => {
-          if (err) {
-            cb(err);
-          } else {
-            this.addArticles(result.feed.entries);
-            cb();
-          }
-        });
-      });
-    });
-  }
-
-  refresh(articlesCb) {
-    async.forEach(this.feeds, (url, cb) => {
-      this.fetchFeed(url, cb);
-    }, () => {
-      articlesCb(this.articles);
-    });
+      _parseFeed(url, res, cb)
+    }).on('error', cb);
+  } catch (err) {
+    cb(err);
   }
 }

@@ -1,5 +1,6 @@
 <link rel="import" href="../../lib/polymer/polymer.html">
 <link rel="import" href="../../lib/iron-list/iron-list.html">
+<link rel="import" href="../components/external-link.html">
 
 <dom-module id="view-feed">
   <template>
@@ -7,7 +8,12 @@
 
     <iron-list items="[[articles]]" as="article">
       <template>
-        <h1>[[article.title]]</h1>
+        <div class="article">
+          <external-link href="[[article.link]]">
+            [[article.title]]
+          </external-link>
+          <div inner-h-t-m-l="[[article.content]]"></div>
+        </div>
       </template>
     </iron-list>
   </template>
