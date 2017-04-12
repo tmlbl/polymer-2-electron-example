@@ -24,6 +24,8 @@
 
   <script src="../rss.js"></script>
   <script>
+    var _ = require('lodash');
+
     Polymer({
       is: 'add-feed',
       properties: {
@@ -34,6 +36,11 @@
       },
 
       _addFeed() {
+        if (_.find(this.feeds, f => f.url === this.addURL)) {
+          this.isNotValid = true;
+          this.errorMessage = 'This feed has already been added!';
+          return;
+        }
         fetchFeed(this.addURL, (err, info, articles) => {
           if (err) {
             this.isNotValid = true;
