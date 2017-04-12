@@ -78,7 +78,7 @@
           fallback-selection="view404"
           role="main">
         <add-feed name="add-feed"></add-feed>
-        <view-feed name="view-feed"></view-feed>
+        <view-feed name="view-feed" articles="{{feedArticles}}"></view-feed>
       </iron-pages>
 
       </app-header-layout>
@@ -95,7 +95,11 @@
       properties: {
         page: {
           type: String,
-          observer: '_pageChanged'
+          // observer: '_pageChanged'
+        },
+        articles: {
+          type: Array,
+          notify: true
         }
       },
 
@@ -104,19 +108,25 @@
       ],
 
       ready() {
-        this.page = 'add-feed';
-        this.rssClient = new RSSClient();
+        this.page = 'view-feed';
+        this.rss = new RSSClient();
+        this.feedArticles = [];
+        this.refreshFeeds();
+      },
 
-        this.rssClient.refresh();
+      refreshFeeds() {
+        this.rss.refresh((articles) => {
+          this.feedArticles = articles;
+        });
       },
 
       _routePageChanged(p) {
         this.page = p;
       },
 
-      _pageChanged(p) {
-        console.log('It changes!', p);
-      }
+      // _pageChanged(p) {
+      //   console.log('It changes!', p);
+      // }
     });
   </script>
 </dom-module>

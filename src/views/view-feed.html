@@ -1,13 +1,26 @@
 <link rel="import" href="../../lib/polymer/polymer.html">
+<link rel="import" href="../../lib/iron-list/iron-list.html">
 
 <dom-module id="view-feed">
   <template>
     <h1>My Feed</h1>
+
+    <iron-list items="[[articles]]" as="article">
+      <template>
+        <h1>[[article.title]]</h1>
+      </template>
+    </iron-list>
   </template>
 
   <script>
     Polymer({
-      is: 'view-feed'
+      is: 'view-feed',
+      properties: {
+        articles: {
+          type: Array,
+          notify: true
+        }
+      }
     });
   </script>
 </dom-module>

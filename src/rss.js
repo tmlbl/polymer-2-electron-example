@@ -1,5 +1,6 @@
 var https = require('https'),
-    rss = require('rss-parser');
+    rss = require('rss-parser'),
+    async = require('async');
 
 const defaultFeeds = [
   'https://news.ycombinator.com/rss'
@@ -8,9 +9,14 @@ const defaultFeeds = [
 class RSSClient {
   constructor() {
     this.feeds = defaultFeeds;
+    this.articles = [];
   }
 
-  fetchFeed(url) {
+  addArticles(articles) {
+    this.articles = this.articles.concat(articles);
+  }
+
+  fetchFeed(url, cb) {
     https.get(url, (res) => {
       var data = '';
 
@@ -20,16 +26,22 @@ class RSSClient {
 
       res.on('end', () => {
         rss.parseString(data, (err, result) => {
-          if (err) throw err;
-          console.log(result);
+          if (err) {
+            cb(err);
+          } else {
+            this.addArticles(result.feed.entries);
+            cb();
+          }
         });
       });
     });
   }
 
-  refresh() {
-    this.feeds.forEach((url) => {
-      this.fetchFeed(url);
+  refresh(articlesCb) {
+    async.forEach(this.feeds, (url, cb) => {
+      this.fetchFeed(url, cb);
+    }, () => {
+      articlesCb(this.articles);
     });
   }
 }
