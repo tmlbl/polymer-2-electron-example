@@ -1,6 +1,7 @@
 // Since this is Electron, we can use node modules alongside our Polymer code.
 // Pretty slick.
-var https = require('https'),
+var http = require('http'),
+    https = require('https'),
     rss = require('rss-parser'),
     async = require('async');
 
@@ -23,7 +24,15 @@ function _parseFeed(url, res, cb) {
           description: feed.description,
           url: url
         };
-        cb(null, info, result.feed.entries);
+
+        // Convert article dates to JS dates and add feed title
+        var articles = result.feed.entries.map((a) => {
+          a.pubDate = new Date(a.pubDate);
+          a.feedName = feed.title;
+          return a;
+        });
+
+        cb(null, info, articles);
       }
     });
   });
@@ -35,9 +44,15 @@ function _parseFeed(url, res, cb) {
  */
 function fetchFeed(url, cb) {
   try {
-    https.get(url, (res) => {
-      _parseFeed(url, res, cb)
-    }).on('error', cb);
+    if (url.indexOf('https') !== -1) {
+      https.get(url, (res) => {
+        _parseFeed(url, res, cb)
+      }).on('error', cb);
+    } else {
+      http.get(url, (res) => {
+        _parseFeed(url, res, cb)
+      }).on('error', cb);
+    }
   } catch (err) {
     cb(err);
   }

@@ -33,9 +33,6 @@
         }
       },
 
-      errorMessage: 'Please enter a valid RSS feed URL',
-      isNotValid: false,
-
       _addFeed() {
         fetchFeed(this.addURL, (err, info, articles) => {
           if (err) {
@@ -48,12 +45,6 @@
           }
         });
       },
-
-      ready() {
-        setInterval(() => {
-          console.log(this.feeds);
-        }, 5000);
-      }
     });
   </script>
 </dom-module>

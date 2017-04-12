@@ -5,34 +5,34 @@
     system's default browser, instead of in the Electron shell.
 -->
 <dom-module id="external-link">
-    <template>
-        <style>
-            .link-wrapper {
-                cursor: pointer;
-                color: blue;
-                text-decoration: underline;
-            }
-        </style>
-        <div on-click="openLink" class="link-wrapper">
-            <content></content>
-        </div>
-    </template>
+  <template>
+    <style>
+      .link-wrapper {
+        cursor: pointer;
+        color: blue;
+        text-decoration: underline;
+      }
+    </style>
+    <div on-click="openLink" class="link-wrapper">
+      <content></content>
+    </div>
+  </template>
 
-    <script>
-        const {shell} = require('electron');
+  <script>
+    const {shell} = require('electron');
 
-        Polymer({
-            is: 'external-link',
-            
-            properties: {
-                href: {
-                    type: String
-                }
-            },
+    Polymer({
+      is: 'external-link',
+        
+      properties: {
+        href: {
+          type: String
+        }
+      },
 
-            openLink() {
-                shell.openExternal(this.href);
-            }
-        })
-    </script>
+      openLink() {
+        shell.openExternal(this.href);
+      }
+    });
+  </script>
 </dom-module>

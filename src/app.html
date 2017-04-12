@@ -88,6 +88,8 @@
   <script src="rss.js" charset="utf-8"></script>
 
   <script>
+    var _ = require('lodash');
+
     const defaultFeeds = [
       {
         description: 'BBC News - World',
@@ -108,11 +110,16 @@
         articles: {
           type: Array,
           notify: true
+        },
+        feeds: {
+          type: Array,
+          notify: true
         }
       },
 
       observers: [
-        '_routePageChanged(routeData.page)'
+        '_routePageChanged(routeData.page)',
+        '_feedsChanged(feeds.splices)'
       ],
 
       ready() {
@@ -132,22 +139,17 @@
       },
 
       /**
-       * Adds the given array of RSS articles to the master list, skipping any
-       * duplicates.
-       */
-      addArticles(articles) {
-        articles.forEach((article) => {
-          this.push('articles', article);
-        });
-      },
-
-      /**
        * Fetches the articles for a particular feed URL and adds them to the 
        * articles list.
        */
       fetchAndIngest(url) {
         fetchFeed(url, (err, feed, articles) => {
-          this.addArticles(articles);
+          articles.forEach((article) => {
+            if (!_.find(this.articles, a => a.title === article.title)) {
+              this.push('articles', article);
+            }
+          });
+          this.articles = _.orderBy(this.articles, ['pubDate'], ['desc']);
         });
       },
 
@@ -158,6 +160,10 @@
         this.feeds.forEach((feed) => {
           this.fetchAndIngest(feed.url);
         });
+      },
+
+      _feedsChanged() {
+        this.refreshFeeds();
       },
 
       _routePageChanged(p) {

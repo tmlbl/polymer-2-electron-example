@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "async": "^2.3.0",
+    "lodash": "^4.17.4",
     "rss-parser": "^2.6.1"
   }
 }
