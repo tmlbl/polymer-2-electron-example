@@ -1,23 +1,41 @@
 <link rel="import" href="../../lib/polymer/polymer.html">
 <link rel="import" href="../../lib/paper-button/paper-button.html">
 <link rel="import" href="../../lib/paper-input/paper-input.html">
+<link rel="import" href="../../lib/paper-item/paper-item.html">
 <link rel="import" href="../components/external-link.html">
+
 
 <dom-module id="add-feed">
   <template>
-    <div class="add-feed-form">
+    <link rel="stylesheet" href="../styles.css">
+
+    <style>
+      .add {
+        background-color: var(--app-primary-color);
+        margin-top: 2rem;
+        color: white;
+      }
+    </style>
+
+    <div class="card">
       <h1>Add a Feed</h1>
       <paper-input 
         label="Feed URL" 
         value="{{addURL}}" 
         invalid="{{isNotValid}}"
         error-message="{{errorMessage}}"></paper-input>
-      <paper-button on-click="_addFeed">Add</paper-button>
+      <paper-button class="add" on-click="_addFeed">Add</paper-button>
     </div>
-    <div class="feed-list">
+    <div class="card">
       <template is="dom-repeat" items="[[feeds]]">
-        <external-link href="[[item.link]]">[[item.title]]</external-link>
-        <p>[[item.description]]</p>
+        <paper-item>
+          <paper-item-body two-line>
+            <external-link href="[[item.link]]" class="header-link">
+              [[item.title]]
+            </external-link>
+            <p>[[item.description]]</p>
+          </paper-item-body>
+        </paper-item>
       </template>
     </div>
   </template>

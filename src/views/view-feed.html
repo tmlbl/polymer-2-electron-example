@@ -1,21 +1,28 @@
 <link rel="import" href="../../lib/polymer/polymer.html">
 <link rel="import" href="../../lib/iron-list/iron-list.html">
+<link rel="import" href="../../lib/paper-item/paper-item.html">
 <link rel="import" href="../components/external-link.html">
 
 <dom-module id="view-feed">
   <template>
-    <h1>My Feed</h1>
+    <link rel="stylesheet" href="../styles.css">
 
-    <iron-list items="[[articles]]" as="article">
-      <template>
-        <div class="article">
-          <external-link href="[[article.link]]">
-            [[article.title]]
-          </external-link>
-          <div inner-h-t-m-l="[[article.content]]"></div>
-        </div>
-      </template>
-    </iron-list>
+    <div class="card">
+      <h1>My Feed</h1>
+
+      <iron-list items="[[articles]]" as="article">
+        <template>
+          <paper-item>
+            <paper-item-body two-line>
+              <external-link href="[[article.link]]" class="header-link">
+                [[article.title]]
+              </external-link>
+              <div secondary inner-h-t-m-l="[[article.content]]"></div>
+            </paper-item-body>
+          </paper-item>
+        </template>
+      </iron-list>
+    </div>
   </template>
 
   <script>
