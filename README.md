@@ -1,12 +1,12 @@
 # Polymer, meet Electron
 
-This is a starter kit that marries the Polymer framework with the Electron
+This is a starter kit that marries the Polymer 2.0 framework with the Electron
 application shell.
 
 This is a match made in heaven because the developer can use all of the latest
 cutting-edge browser features like native ES6 support, HTTP2, and CSS3 
 variables, without having to worry about legacy browser support. This makes it
-much easier to write forward-leaning web code with Polymer.
+much easier to write forward-leaning web code with Polymer 2.
 
 Also, this setup allows one to use node modules with `require` syntax seamlessly
 alongside front-end code. The result is a powerful framework development
