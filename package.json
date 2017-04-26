@@ -1,5 +1,5 @@
 {
-  "name": "poly-tron",
+  "name": "rss-app",
   "version": "1.0.0",
   "description": "A minimal Electron application",
   "main": "main.js",

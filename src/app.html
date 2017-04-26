@@ -15,9 +15,10 @@
 <link rel="import" href="views/add-feed.html">
 <link rel="import" href="views/view-feed.html">
 
-<dom-module id="poly-tron">
-  <template>
+<link rel="import" href="components/rss-icons.html">
 
+<dom-module id="rss-app">
+  <template>
     <style>
       :host {
         --app-primary-color: #4285f4;
@@ -60,7 +61,7 @@
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}"></app-route>
 
     <app-drawer-layout fullbleed>
-      <app-drawer>
+      <app-drawer id="drawer" slot="drawer">
         <app-toolbar>Menu</app-toolbar>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
           <a name="view-feed" href="#/view-feed">View Feed</a>
@@ -71,7 +72,6 @@
       <app-header-layout has-scrolling-region>
         <app-header fixed>
           <app-toolbar>
-            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div main-title>RSS Reader</div>
           </app-toolbar>
         </app-header>
@@ -103,33 +103,37 @@
       }
     ];
 
-    // Start Polymer
-    Polymer({
-      is: 'poly-tron',
+    class RSSApp extends Polymer.Element {
+      static get is() { return 'rss-app' }
 
-      properties: {
-        page: {
-          type: String
-        },
-        articles: {
-          type: Array,
-          notify: true
-        },
-        feeds: {
-          type: Array,
-          notify: true
+      static get properties() {
+        return {
+          page: {
+            type: String
+          },
+          articles: {
+            type: Array,
+            notify: true
+          },
+          feeds: {
+            type: Array,
+            notify: true
+          }
         }
-      },
+      }
 
-      observers: [
-        '_routePageChanged(routeData.page)',
-        '_feedsChanged(feeds.splices)'
-      ],
+      static get observers() {
+        return [
+          '_routePageChanged(routeData.page)',
+          '_feedsChanged(feeds.splices)'
+        ]
+      }
 
       ready() {
+        super.ready();
         // Apply a default route, but make sure refresh works.
         window.location.hash = window.location.hash || "#/view-feed";
- 
+
         // Check localStorage for a feed list. If none is found, use defaultFeeds.
         var feeds = localStorage.getItem('feeds');
         if (!feeds) {
@@ -140,10 +144,10 @@
         this.articles = [];
 
         this.refreshFeeds();
-      },
+      }
 
       /**
-       * Fetches the articles for a particular feed URL and adds them to the 
+       * Fetches the articles for a particular feed URL and adds them to the
        * articles list.
        */
       fetchAndIngest(url) {
@@ -155,7 +159,7 @@
           });
           this.articles = _.orderBy(this.articles, ['pubDate'], ['desc']);
         });
-      },
+      }
 
       /**
        * Retrieve the latest articles for all known feeds.
@@ -164,15 +168,17 @@
         this.feeds.forEach((feed) => {
           this.fetchAndIngest(feed.url);
         });
-      },
+      }
 
       _feedsChanged() {
         this.refreshFeeds();
-      },
+      }
 
       _routePageChanged(p) {
         this.page = p;
-      },
-    });
+      }
+    }
+
+    customElements.define(RSSApp.is, RSSApp);
   </script>
 </dom-module>

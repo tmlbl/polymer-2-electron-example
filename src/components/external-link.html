@@ -13,25 +13,29 @@
       }
     </style>
     <div on-click="openLink" class="link-wrapper">
-      <content></content>
+      <slot></slot>
     </div>
   </template>
 
   <script>
     const {shell} = require('electron');
 
-    Polymer({
-      is: 'external-link',
-        
-      properties: {
-        href: {
-          type: String
+    class ExternalLink extends Polymer.Element {
+      static get is() { return 'external-link' }
+
+      static get properties() {
+        return {
+          href: {
+            type: String
+          }
         }
-      },
+      }
 
       openLink() {
         shell.openExternal(this.href);
       }
-    });
+    }
+
+    customElements.define(ExternalLink.is, ExternalLink);
   </script>
 </dom-module>

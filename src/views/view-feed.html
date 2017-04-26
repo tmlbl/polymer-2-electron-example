@@ -5,8 +5,7 @@
 
 <dom-module id="view-feed">
   <template>
-    <link rel="stylesheet" href="../styles.css">
-
+    <link rel="stylesheet" href="src/styles.css">
     <div class="card">
       <h1>My Feed</h1>
 
@@ -26,14 +25,19 @@
   </template>
 
   <script>
-    Polymer({
-      is: 'view-feed',
-      properties: {
-        articles: {
-          type: Array,
-          notify: true
+    class ViewFeed extends Polymer.Element {
+      static get is() { return 'view-feed' }
+
+      static get properties() {
+        return {
+          articles: {
+            type: Array,
+            notify: true
+          }
         }
       }
-    });
+    }
+
+    customElements.define(ViewFeed.is, ViewFeed);
   </script>
 </dom-module>
